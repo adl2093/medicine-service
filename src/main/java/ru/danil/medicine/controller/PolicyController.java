@@ -3,6 +3,7 @@ package ru.danil.medicine.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import ru.danil.medicine.api.MedicalPolicyApi;
 import ru.danil.medicine.dto.PolicyDTO;
@@ -11,6 +12,7 @@ import ru.danil.medicine.service.PolicyService;
 import java.util.UUID;
 
 @RestController
+@Validated
 @RequiredArgsConstructor
 public class PolicyController implements MedicalPolicyApi {
     private final PolicyService policyService;
