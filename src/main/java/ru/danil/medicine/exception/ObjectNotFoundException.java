@@ -5,8 +5,8 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ObjectNotFound extends RuntimeException {
-    public ObjectNotFound(String message) {
+public class ObjectNotFoundException extends RuntimeException {
+    public ObjectNotFoundException(String message) {
         super(message);
     }
 }

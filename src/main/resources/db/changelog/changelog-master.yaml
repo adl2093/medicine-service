@@ -1,0 +1,14 @@
+dataBaseChangelog:
+  changeSet:
+    id: 1
+    author: me
+    changes:
+      - sql:
+          sql: CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+      - sql: CREATE TABLE IF NOT EXISTS medical_policies (
+             person_id UUID PRIMARY KEY,
+             policy_number TEXT NOT NULL CHECK(length(policy_number) = 6),
+             created_at TIMESTAMP,
+             updated_at TIMESTAMP,
+             is_deleted BOOLEAN DEFAULT FALSE
+             );

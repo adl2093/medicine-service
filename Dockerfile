@@ -1,10 +1,9 @@
 FROM eclipse-temurin:21-jdk-jammy AS builder
 WORKDIR /build
-COPY gradle gradle
 COPY gradlew .
-COPY settings.gradle .
+COPY gradle gradle
 COPY build.gradle .
-RUN ./gradlew --version
+COPY settings.gradle .
 RUN ./gradlew dependencies --no-daemon
 COPY src/main/resources/openapi.yaml src/main/resources/openapi.yaml
 RUN ./gradlew openApiGenerate --no-daemon
