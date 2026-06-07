@@ -11,6 +11,7 @@ import ru.danil.medicine.model.Policy;
 import ru.danil.medicine.repository.PolicyRepository;
 
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,7 +23,9 @@ public class PolicyService {
 
     @Transactional
     public PolicyDTO create(PolicyDTO policyDTO) {
-        return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
+        Optional<Policy> policy = policyRepository.findById(policyDTO.getPersonId());
+        if (policy.isPresent()) return policyMapper.toPolicyDTO(policy.get());
+        else return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
     }
 
     @Transactional(readOnly = true)
