@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import jakarta.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-05-31T17:41:53.493542600+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-06-02T17:54:24.494491700+03:00[Europe/Moscow]")
 @Validated
 @Tag(name = "Medical policy", description = "the Medical policy API")
 @RequestMapping("${openapi.medicine.base-path:}")

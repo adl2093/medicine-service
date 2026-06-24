@@ -7,7 +7,7 @@ import ru.danil.medicine.model.Policy;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-05-31T17:41:57+0300",
+    date = "2026-06-02T17:54:26+0300",
     comments = "version: 1.6.3, compiler: IncrementalProcessingEnvironment from gradle-language-java-9.4.1.jar, environment: Java 21.0.11 (Microsoft)"
 )
 @Component

@@ -25,7 +25,7 @@ public class PolicyService {
     public PolicyDTO create(PolicyDTO policyDTO) {
         Optional<Policy> policy = policyRepository.findById(policyDTO.getPersonId());
         if (policy.isPresent()) return policyMapper.toPolicyDTO(policy.get());
-        else return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
+        else return createNewPolicyDTO(policyDTO);
     }
 
     @Transactional(readOnly = true)
@@ -36,5 +36,10 @@ public class PolicyService {
         });
            log.debug("Найден полис: {}", policy.toString());
            return policyMapper.toPolicyDTO(policy);
+    }
+
+    @Transactional
+    public PolicyDTO createNewPolicyDTO(PolicyDTO policyDTO){
+        return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
     }
 }
