@@ -19,7 +19,7 @@ public class PolicyController implements MedicalPolicyApi {
 
     @Override
     public ResponseEntity<PolicyDTO> createPolicy(PolicyDTO policyDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(policyService.create(policyDTO));
+        return ResponseEntity.status(HttpStatus.CREATED).body(policyService.createNewPolicyDTO(policyDTO));
     }
 
     @Override

@@ -21,13 +21,6 @@ public class PolicyService {
     private final PolicyRepository policyRepository;
     private final PolicyMapper policyMapper;
 
-    @Transactional
-    public PolicyDTO create(PolicyDTO policyDTO) {
-        Optional<Policy> policy = policyRepository.findById(policyDTO.getPersonId());
-        if (policy.isPresent()) return policyMapper.toPolicyDTO(policy.get());
-        else return createNewPolicyDTO(policyDTO);
-    }
-
     @Transactional(readOnly = true)
     public PolicyDTO get(UUID id) {
         Policy policy = policyRepository.findById(id).orElseThrow(() -> {
