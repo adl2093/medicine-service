@@ -27,7 +27,6 @@ public class PolicyService {
             log.error("Полис с таким айди не найден: {}", id);
             throw  new ObjectNotFoundException("Полис с таким айди не найден: " + id);
         });
-           log.debug("Найден полис: {}", policy.toString());
            return policyMapper.toPolicyDTO(policy);
     }
 
