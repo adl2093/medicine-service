@@ -20,6 +20,36 @@ spring:
     change-log: classpath:db/changelog/changelog-master.yaml
     default-schema: test
 
+  kafka:
+    bootstrap-servers: kafka:9092
+    consumer:
+      max-poll-records: 100
+      enable-auto-commit: false
+      group-id: medicine-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "ru.danil.medicine.dto"
+        spring.json.value.default.type: "ru.danil.medicine.dto.RetryableTaskDTO"
+    enable-auto-commit: false
+    group-id: medicine-service-group
+    listener:
+      type: batch
+      ack-mode: manual
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+      properties:
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [Request-ID: %X{requestId}] - %msg%n"
+
+kafka-topic:
+  minInsyncReplicas: "1"
+  partitions: 1
+  replicas: 1

@@ -16,3 +16,16 @@ databaseChangeLog:
                 updated_at TIMESTAMP,
                 is_deleted BOOLEAN DEFAULT FALSE
               );
+
+  - changeSet:
+      id: 2
+      author: me
+      changes:
+        - sql:
+            sql: |
+              CREATE TABLE IF NOT EXISTS test.processed_events (
+                event_id UUID PRIMARY KEY,
+                created_at TIMESTAMP,
+                updated_at TIMESTAMP,
+                is_deleted BOOLEAN DEFAULT FALSE
+              );

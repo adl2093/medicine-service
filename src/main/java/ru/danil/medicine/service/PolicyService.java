@@ -31,7 +31,7 @@ public class PolicyService {
     }
 
     @Transactional
-    public PolicyDTO createNewPolicyDTO(PolicyDTO policyDTO){
+    public PolicyDTO createNewPolicy(PolicyDTO policyDTO){
         return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
     }
 }
