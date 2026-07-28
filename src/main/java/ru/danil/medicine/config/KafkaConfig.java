@@ -18,11 +18,12 @@ public class KafkaConfig {
     private Integer replicas;
     private Integer partitions;
     private String minInsyncReplicas;
+    private String policyCreatedTopicName;
 
     @Bean
     NewTopic createTopic(){
         return TopicBuilder
-                .name("policy-created-dlq")
+                .name(policyCreatedTopicName)
                 .partitions(partitions)
                 .replicas(replicas)
                 .configs(Map.of("min.insync.replicas", minInsyncReplicas))

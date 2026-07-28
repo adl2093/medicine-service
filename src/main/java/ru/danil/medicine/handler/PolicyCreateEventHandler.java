@@ -20,7 +20,7 @@ public class PolicyCreateEventHandler {
     private final IdempotencyKeyService idempotencyKeyService;
     private final DlqProducer dlqProducer;
 
-    @KafkaListener(topics = "policy-created-topic")
+    @KafkaListener(topics = "${kafka-listener.topic-name-in-policy-create-event-handler}")
     public void handle(List<RetryableTaskDTO> retryableTaskDTOs, Acknowledgment ack) {
         List<UUID> ids = retryableTaskDTOs.stream().map(RetryableTaskDTO::getId).toList();
         Set<UUID> processedIds = new HashSet<>(idempotencyKeyService.findByIdIn(ids));

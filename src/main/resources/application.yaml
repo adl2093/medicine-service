@@ -49,7 +49,12 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [Request-ID: %X{requestId}] - %msg%n"
 
+kafka-listener:
+  topic-name-in-policy-create-event-handler: "policy-created-topic"
+
 kafka-topic:
+  policy-created-topic-name: "policy-created-topic"
+  policy-created-dlq-name: "policy-created-dlq"
   minInsyncReplicas: "1"
   partitions: 1
   replicas: 1
