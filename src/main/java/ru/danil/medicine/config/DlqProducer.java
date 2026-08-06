@@ -1,4 +1,4 @@
-package ru.danil.medicine.messaging;
+package ru.danil.medicine.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.util.UUID;
 public class DlqProducer {
     private final KafkaTemplate<UUID, RetryableTaskDTO> kafkaTemplate;
 
-    public void sendRetryableTasksToCreateDQLTopic(List<RetryableTaskDTO> retryableTaskDTOs) {
+    public void sendDLQ(List<RetryableTaskDTO> retryableTaskDTOs) {
         retryableTaskDTOs.forEach(dto -> {
             kafkaTemplate.send("${kafka-topic.policy-created-dlq-name}", dto.getId(), dto);
             log.info("Событие {} отправлено в DLQ", dto.getId());

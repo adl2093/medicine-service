@@ -15,6 +15,7 @@ public interface IdempotencyKeyRepository extends CrudRepository<IdempotencyKey,
     @Query(value = """
     INSERT INTO idempotency_keys (id, created_at)
     SELECT unnest(:ids::uuid[]), now()
+    ON CONFLICT (id) DO NOTHING
     """, nativeQuery = true)
     void insertBatch(List<UUID> ids);
 }

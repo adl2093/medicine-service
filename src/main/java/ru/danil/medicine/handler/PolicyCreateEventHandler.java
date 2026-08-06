@@ -6,9 +6,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import ru.danil.medicine.dto.RetryableTaskDTO;
-import ru.danil.medicine.messaging.DlqProducer;
-import ru.danil.medicine.service.IdempotencyKeyService;
-import ru.danil.medicine.service.PolicyWithIdempotency;
+import ru.danil.medicine.service.processor.PolicyTaskProcessor;
 
 import java.util.*;
 
@@ -16,28 +14,12 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class PolicyCreateEventHandler {
-    private final PolicyWithIdempotency policyWithIdempotency;
-    private final IdempotencyKeyService idempotencyKeyService;
-    private final DlqProducer dlqProducer;
+    private final PolicyTaskProcessor processor;
 
     @KafkaListener(topics = "${kafka-listener.topic-name-in-policy-create-event-handler}")
     public void handle(List<RetryableTaskDTO> retryableTaskDTOs, Acknowledgment ack) {
-        List<UUID> ids = retryableTaskDTOs.stream().map(RetryableTaskDTO::getId).toList();
-        Set<UUID> processedIds = new HashSet<>(idempotencyKeyService.findByIdIn(ids));
-        List<RetryableTaskDTO> newTasks = filterNewTask(retryableTaskDTOs, processedIds);
-        log.info("Новых сообщений для обработки: {}, уже обработано: {}", newTasks.size(), processedIds.size());
-
-        List<RetryableTaskDTO> failedTasks = policyWithIdempotency.processTasks(newTasks);
-        if (!failedTasks.isEmpty()) {
-            dlqProducer.sendRetryableTasksToCreateDQLTopic(failedTasks);
-        }
+        processor.process(retryableTaskDTOs);
         ack.acknowledge();
         log.info("Пачка обработана, комитим");
-    }
-
-    private List<RetryableTaskDTO> filterNewTask(List<RetryableTaskDTO> retryableTaskDTOs, Set<UUID> processedIds) {
-        return retryableTaskDTOs.stream()
-                .filter(retryableTaskDTO -> !processedIds.contains(retryableTaskDTO.getId()))
-                .toList();
     }
 }

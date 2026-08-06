@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * Gets or Sets RetryableTaskType
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-07-23T12:16:52.268488100+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-08-06T18:11:59.497902700+03:00[Europe/Moscow]")
 public enum RetryableTaskType {
   
   CREATED_MEDICINE_POLICY("CREATED_MEDICINE_POLICY");

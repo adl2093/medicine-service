@@ -18,7 +18,7 @@ import jakarta.annotation.Generated;
  * PolicyDTO
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-06-02T17:54:24.494491700+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-08-06T18:11:59.866047900+03:00[Europe/Moscow]")
 public class PolicyDTO {
 
   private String policyNumber;
