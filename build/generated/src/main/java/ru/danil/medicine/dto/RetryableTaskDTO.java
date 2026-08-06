@@ -22,7 +22,7 @@ import jakarta.annotation.Generated;
  * RetryableTaskDTO
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-08-06T18:11:59.497902700+03:00[Europe/Moscow]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2026-08-06T18:21:01.717735800+03:00[Europe/Moscow]")
 public class RetryableTaskDTO {
 
   private UUID id;

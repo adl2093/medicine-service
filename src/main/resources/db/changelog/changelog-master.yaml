@@ -23,8 +23,8 @@ databaseChangeLog:
       changes:
         - sql:
             sql: |
-              CREATE TABLE IF NOT EXISTS test.processed_events (
-                event_id UUID PRIMARY KEY,
+              CREATE TABLE IF NOT EXISTS test.idempotency_keys (
+                id UUID PRIMARY KEY,
                 created_at TIMESTAMP,
                 updated_at TIMESTAMP,
                 is_deleted BOOLEAN DEFAULT FALSE
