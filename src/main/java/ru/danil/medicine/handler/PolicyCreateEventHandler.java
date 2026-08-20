@@ -6,7 +6,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 import ru.danil.medicine.dto.RetryableTaskDTO;
-import ru.danil.medicine.service.processor.PolicyTaskProcessor;
+import ru.danil.medicine.service.PolicyCreationService;
 
 import java.util.*;
 
@@ -14,7 +14,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 public class PolicyCreateEventHandler {
-    private final PolicyTaskProcessor processor;
+    private final PolicyCreationService processor;
 
     @KafkaListener(topics = "${kafka-listener.topic-name-in-policy-create-event-handler}")
     public void handle(List<RetryableTaskDTO> retryableTaskDTOs, Acknowledgment ack) {

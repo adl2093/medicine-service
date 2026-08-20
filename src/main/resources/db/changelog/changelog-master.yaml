@@ -29,3 +29,15 @@ databaseChangeLog:
                 updated_at TIMESTAMP,
                 is_deleted BOOLEAN DEFAULT FALSE
               );
+        - sql:
+            sql: |
+              CREATE TABLE IF NOT EXISTS test.outbox_events (
+              id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+              retry_time TIMESTAMP WITH TIME ZONE,
+              lease_expires_at TIMESTAMP WITH TIME ZONE,
+              payload jsonb,
+              attempts INTEGER NOT NULL DEFAULT 0,
+              created_at TIMESTAMP,
+              updated_at TIMESTAMP,
+              is_deleted BOOLEAN DEFAULT FALSE
+              );

@@ -58,3 +58,9 @@ kafka-topic:
   minInsyncReplicas: "1"
   partitions: 1
   replicas: 1
+
+outbox-service:
+  limit: 100
+  retry-delay-seconds: 36000
+  processing-lease-seconds: 900
+  max-attempts: 3
