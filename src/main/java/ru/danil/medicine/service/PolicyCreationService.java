@@ -16,6 +16,7 @@ import java.util.List;
 public class PolicyCreationService {
     private final PolicyTaskService policyTaskService;
     private final TaskExceptionClassifier exceptionClassifier;
+    private final OutboxService outboxService;
 
     public void process(List<RetryableTaskDTO> tasks) {
         boolean retry = false;
@@ -24,16 +25,30 @@ public class PolicyCreationService {
                 policyTaskService.processSingleTask(task);
             } catch (Exception e) {
                 TaskProcessingResult result = exceptionClassifier.classify(e);
-                if (result == TaskProcessingResult.RETRY) {
-                    retry = true;
-                    log.warn("Событие {} будет обработано повторно", task.getId(), e);
-                } else {
-                    throw e;
-                }
+                retry = handleResult(task, result, e, retry);
             }
         }
         if (retry) {
             throw new RetryableTaskException("Обработка батча требует retry");
         }
+    }
+
+    private boolean handleResult(RetryableTaskDTO task, TaskProcessingResult result, Exception e, boolean retry) {
+        switch (result) {
+            case RETRY:
+                retry = true;
+                log.warn("Задача {} требует повторной обработки (RETRY)", task.getId(), e);
+                break;
+            case PERMANENT_FAILURE:
+                log.error("Задача {} содержит ошибку данных (PERMANENT), пропускаем", task.getId(), e);
+                outboxService.saveDlqEvent(task);
+                break;
+            case UNEXPECTED:
+                log.error("Неожиданная ошибка при обработке задачи {}, прерываем батч", task.getId(), e);
+                throw new RetryableTaskException("Неожиданная ошибка при обработке задачи " + task.getId(), e);
+            default:
+                throw new IllegalStateException("Неизвестный результат классификации: " + result);
+        }
+        return retry;
     }
 }

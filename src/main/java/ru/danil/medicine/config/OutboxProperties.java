@@ -29,4 +29,8 @@ public class OutboxProperties {
     @NotNull
     @Min(1)
     private Integer maxAttempts;
+
+    @NotNull
+    @Min(1)
+    private Integer parallelism;
 }

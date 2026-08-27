@@ -64,3 +64,4 @@ outbox-service:
   retry-delay-seconds: 36000
   processing-lease-seconds: 900
   max-attempts: 3
+  parallelism: 5

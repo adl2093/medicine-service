@@ -33,6 +33,7 @@ databaseChangeLog:
             sql: |
               CREATE TABLE IF NOT EXISTS test.outbox_events (
               id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+              attempt_id UUID,
               retry_time TIMESTAMP WITH TIME ZONE,
               lease_expires_at TIMESTAMP WITH TIME ZONE,
               payload jsonb,

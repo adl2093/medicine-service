@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.danil.medicine.dto.PolicyDTO;
 import ru.danil.medicine.dto.RetryableTaskDTO;
-import ru.danil.medicine.exception.PermanentDataException;
 import ru.danil.medicine.mapper.RetryableTaskMapper;
 
 @Slf4j
@@ -30,13 +29,7 @@ public class PolicyTaskService {
     }
 
     private void createPolicy(RetryableTaskDTO dto) {
-        try {
             PolicyDTO policyDTO = retryableTaskMapper.toPolicyDTOFromPayloadOfRetryableTask(dto);
             policyService.createNewPolicy(policyDTO);
-            outboxService.saveDlqEvent(dto);
-        } catch (PermanentDataException e) {
-            log.error("Событие {} завершилось permanent failure: {}", dto.getId(), e.getMessage());
-            outboxService.saveDlqEvent(dto);
-        }
     }
 }

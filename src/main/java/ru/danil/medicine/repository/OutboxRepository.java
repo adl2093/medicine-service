@@ -28,37 +28,41 @@ public interface OutboxRepository extends CrudRepository<OutboxEvent, UUID> {
                 FOR UPDATE SKIP LOCKED
             )
             UPDATE outbox_events o
-            SET lease_expires_at = :leaseExpiresAt, updated_at = :now
+            SET lease_expires_at = :leaseExpiresAt, updated_at = :now , attempt_id = :attemptId
             FROM candidates c
             WHERE o.id = c.id
             RETURNING o.*
             """,
             nativeQuery = true)
-    List<OutboxEvent> claimEvents(Instant now, Instant leaseExpiresAt, int limit);
+    List<OutboxEvent> claimEvents(Instant now, Instant leaseExpiresAt, int limit, UUID attemptId);
 
     @Modifying
     @Query("""
             UPDATE OutboxEvent o
             SET o.isDeleted = true,
                 o.updatedAt = :now,
-                o.leaseExpiresAt = null
+                o.leaseExpiresAt = null,
+                o.attemptId = null
             WHERE o.id = :id
               AND o.isDeleted = false
               AND o.leaseExpiresAt >= :now
+              AND o.attemptId = :attemptId
             """)
-    int markAsDeleted(UUID id, Instant now);
+    int markAsDeleted(UUID id, Instant now, UUID attemptId);
 
     @Modifying
     @Query("""
-            UPDATE OutboxEvent o
-            SET o.retryTime = :retryTime,
-                o.attempts = o.attempts + 1,
-                o.updatedAt = :now,
-                o.leaseExpiresAt = null
-            WHERE o.id = :id
-              AND o.isDeleted = false
-              AND o.leaseExpiresAt >= :now
-              AND o.attempts < :maxAttempts
-            """)
-    int reschedule(UUID id, Instant retryTime, Instant now, int maxAttempts);
+        UPDATE OutboxEvent o
+        SET o.retryTime = :retryTime,
+            o.attempts = o.attempts + 1,
+            o.updatedAt = :now,
+            o.leaseExpiresAt = null,
+            o.attemptId = null
+        WHERE o.id = :id
+          AND o.isDeleted = false
+          AND o.leaseExpiresAt >= :now
+          AND o.attempts < :maxAttempts
+          AND o.attemptId = :attemptId
+        """)
+    int reschedule(UUID id, UUID attemptId, Instant retryTime, Instant now, int maxAttempts);
 }

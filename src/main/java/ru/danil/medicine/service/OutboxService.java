@@ -33,31 +33,34 @@ public class OutboxService {
     public List<OutboxEvent> claimEvents() {
         Instant now = Instant.now();
         Instant leaseExpiresAt = now.plusSeconds(properties.getProcessingLeaseSeconds());
-        return outboxRepository.claimEvents(now, leaseExpiresAt, properties.getLimit());
+        UUID attemptId = UUID.randomUUID();
+        return outboxRepository.claimEvents(now, leaseExpiresAt, properties.getLimit(), attemptId);
     }
 
     @Transactional
-    public void markAsDeleted(UUID id) {
+    public void markAsDeleted(OutboxEvent event) {
         Instant now = Instant.now();
-        int updated = outboxRepository.markAsDeleted(id, now);
+        UUID eventId = event.getId();
+        int updated = outboxRepository.markAsDeleted(event.getId(), now, event.getAttemptId());
 
         if (updated == 0) {
-            log.warn("Outbox событие {} не найдено, уже обработано или lease истёк", id);
+            log.warn("Outbox событие {} не найдено, уже обработано или lease истёк", eventId);
         } else {
-            log.info("Outbox событие {} помечено как обработанное", id);
+            log.info("Outbox событие {} помечено как обработанное", eventId);
         }
     }
 
     @Transactional
-    public void reschedule(UUID id) {
+    public void reschedule(OutboxEvent event) {
         Instant now = Instant.now();
+        UUID eventId = event.getId();
         Instant nextRetry = now.plusSeconds(properties.getRetryDelaySeconds());
-        int updated = outboxRepository.reschedule(id, nextRetry, now, properties.getMaxAttempts());
+        int updated = outboxRepository.reschedule(eventId, event.getAttemptId(), nextRetry, now, properties.getMaxAttempts());
 
         if (updated == 0) {
-            log.warn("Outbox событие {} не найдено, lease истёк или достигнут лимит попыток", id);
+            log.warn("Outbox событие {} не найдено, lease истёк или достигнут лимит попыток", eventId);
         } else {
-            log.info("Outbox событие {} перепланировано", id);
+            log.info("Outbox событие {} перепланировано", eventId);
         }
     }
 }
