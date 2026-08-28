@@ -10,8 +10,6 @@ import ru.danil.medicine.mapper.PolicyMapper;
 import ru.danil.medicine.model.Policy;
 import ru.danil.medicine.repository.PolicyRepository;
 
-
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,7 +29,7 @@ public class PolicyService {
     }
 
     @Transactional
-    public PolicyDTO createNewPolicyDTO(PolicyDTO policyDTO){
+    public PolicyDTO createNewPolicy(PolicyDTO policyDTO){
         return policyMapper.toPolicyDTO(policyRepository.save(policyMapper.toPolicy(policyDTO)));
     }
 }

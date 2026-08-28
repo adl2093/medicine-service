@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.mapstruct:mapstruct:1.6.3'
 	implementation 'org.springframework.boot:spring-boot-starter-liquibase'
+	implementation 'org.springframework.boot:spring-boot-starter-kafka:4.1.0'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -42,10 +43,8 @@ openApiGenerate {
 	generatorName = "spring"
 	inputSpec = file("${projectDir}/src/main/resources/openapi.yaml").absolutePath.replace('\\', '/')
 	outputDir = layout.buildDirectory.dir("generated").get().asFile.path
-
 	apiPackage = "ru.danil.medicine.api"
 	modelPackage = "ru.danil.medicine.dto"
-
 	configOptions = [
 			requestMappingMode: "api_interface",
 			skipDefaultInterface: "true",
@@ -58,6 +57,25 @@ openApiGenerate {
 	]
 }
 
+tasks.register('generateKafkaDto', org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+	generatorName = "spring"
+	inputSpec = file("${projectDir}/src/main/resources/kafka.yaml").absolutePath.replace('\\', '/')
+	outputDir = layout.buildDirectory.dir("generated").get().asFile.path
+	apiPackage = "ru.danil.medicine.kafka.api"
+	modelPackage = "ru.danil.medicine.dto"
+	configOptions = [
+			skipDefaultInterface: "true",
+			interfaceOnly: "true",
+			useSpringBoot3: "true",
+			openApiNullable: "false",
+			generateSupportingFiles: "false"
+	]
+}
+
+tasks.named("compileJava") {
+	dependsOn("openApiGenerate", "generateKafkaDto")
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
@@ -66,8 +84,7 @@ sourceSets {
 	main {
 		java {
 			srcDirs += layout.buildDirectory.dir("generated/src/main/java").get().asFile.path
+			srcDirs += layout.buildDirectory.dir("generated-kafka/src/main/java").get().asFile.path
 		}
 	}
 }
-
-compileJava.dependsOn tasks.openApiGenerate
